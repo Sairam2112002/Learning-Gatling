@@ -18,7 +18,15 @@ object BaseHelper {
     val httpProtocol: HttpProtocolBuilder = http
         .disableAutoReferer
         .disableFollowRedirect
-        .inferHtmlResources(AllowList(), DenyList(""".*\.js""", """.*\.css""", """.*\.gif""", """.*\.jpeg""", """.*\.webp""",""".*\.jpg""", """.*\.ico""", """.*\.woff""", """.*\.woff2""", """.*\.(t|o)tf""", """.*\.png""", """.*\.svg""", """.*detectportal\.firefox\.com.*"""))
+        .inferHtmlResources(AllowList(
+        """http://localhost/""",
+        """http://localhost/tables""",
+        """http://localhost/products/""",
+        """http://localhost/wp-admin/admin-ajax.php""",
+        """http://localhost/chairs""",
+        """http://localhost/cart""",
+        """http://localhost/checkout""",
+        """http://localhost/thank-you"""), DenyList(""".*"""))
         .acceptHeader("*/*")
         .acceptEncodingHeader("gzip, deflate, br")
         .acceptLanguageHeader("en-GB,en-US;q=0.9,en;q=0.8")

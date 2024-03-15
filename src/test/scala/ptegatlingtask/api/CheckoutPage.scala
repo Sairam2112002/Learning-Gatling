@@ -52,7 +52,7 @@ object CheckoutPage {
                 .formParam("cart_s_email", "")
                 .formParam("cart_s_comment", "")
                 .formParam("cart_submit", "Place Order")
-
+                .check(status.is(302))
         )
     }
 }
