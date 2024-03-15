@@ -74,7 +74,7 @@
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
         <configuration>
-          <simulationClass>demoblaze.simulations.Demoblaze</simulationClass>
+          <simulationClass>ptegatlingtask.simulations.PTEGatlingTask</simulationClass>
         </configuration>
       </plugin>
     </plugins>
