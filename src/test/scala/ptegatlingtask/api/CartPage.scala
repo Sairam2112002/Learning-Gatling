@@ -19,16 +19,21 @@ object CartPage {
 
     def placeOrder(): ChainBuilder = {
         exec(
+            session => {
+                val tableID = session("c_tableCurrentProduct").as[String]
+                val tableQuantity = session("c_tableCurrentQuantity").as[String]
+                val chairID = session("c_chairCurrentProduct").as[String]
+                val chairQuantity = session("c_chairCurrentQuantity").as[String]
+
+                val newSession = session.set("c_cartContent", s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}""")
+
+                newSession
+            }
+        )
+        .exec(
             http("Place Order")
                 .post(pteCheckoutUri)
-                .formParam("cart_content", {
-                    val tableID = "${c_tableCurrentProduct}"
-                    val tableQuantity = "${c_tableCurrentQuantity}"
-                    val chairID = "${c_chairCurrentProduct}"
-                    val chairQuantity = "${c_chairCurrentQuantity}"
-
-                    s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
-                })
+                .formParam("cart_content", "${c_cartContent}")
                 .formParam("p_id[]", "${c_tableCurrentProduct}__")
                 .formParam("p_quantity[]", "${c_tableCurrentQuantity}")
                 .formParam("p_id[]", "${c_chairCurrentProduct}__")

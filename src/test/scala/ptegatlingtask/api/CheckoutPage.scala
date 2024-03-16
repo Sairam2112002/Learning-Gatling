@@ -22,27 +22,13 @@ object CheckoutPage {
             http("Enter Details and Place Order")
                 .post(pteCheckoutUri)
                 .formParam("ic_formbuilder_redirect", "${c_redirectThankYou}")
-                .formParam("cart_content", {
-                    val tableID = "${c_tableCurrentProduct}"
-                    val tableQuantity = "${c_tableCurrentQuantity}"
-                    val chairID = "${c_chairCurrentProduct}"
-                    val chairQuantity = "${c_chairCurrentQuantity}"
-
-                    s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
-                })
+                .formParam("cart_content", "${c_cartContent}")
                 .formParam("""product_price_${c_tableCurrentProduct}__""", "${c_tablePrice}")
                 .formParam("""product_price_${c_chairCurrentProduct}__""", "${c_chairPrice}")
                 .formParam("total_net", "${c_totalPrice}")
                 .formParam("trans_id", "${c_transactionID}")
                 .formParam("shipping", "order")
-                .formParam("cart_content", {
-                    val tableID = "${c_tableCurrentProduct}"
-                    val tableQuantity = "${c_tableCurrentQuantity}"
-                    val chairID = "${c_chairCurrentProduct}"
-                    val chairQuantity = "${c_chairCurrentQuantity}"
-
-                    s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
-                })
+                .formParam("cart_content", "${c_cartContent}")
                 .formParam("cart_type", "order")
                 .formParam("cart_inside_header_1", "<b>BILLING ADDRESS</b>")
                 .formParam("cart_company", "${company}")

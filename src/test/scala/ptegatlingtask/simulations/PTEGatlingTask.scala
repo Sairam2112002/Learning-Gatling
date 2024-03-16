@@ -41,6 +41,6 @@ class PTEGatlingTask extends Simulation {
     // mvn clean gatling:test
 
     setUp(
-        scenario1.inject(atOnceUsers(100))
+        scenario1.inject(atOnceUsers(1))
     ).protocols(httpProtocol)
 }
