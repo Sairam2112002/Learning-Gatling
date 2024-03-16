@@ -9,7 +9,7 @@ object ProductPage {
     def selectATable(): ChainBuilder = {
         exec(
             http("Select a Table")
-                .get(session => pteProductsUri + s"${session("table").as[String]}")
+                .get(pteProductsUri + "${table}")
                 .check(css("input[name='current_product']", "value").saveAs("c_tableCurrentProduct"))
                 .check(css("input[name='cart_content']", "value").saveAs("c_tableCartContent"))
                 .check(css("input[name='current_quantity']", "value").saveAs("c_tableCurrentQuantity"))
@@ -32,7 +32,7 @@ object ProductPage {
     def selectAChair(): ChainBuilder = {
         exec(
             http(s"Select a Chair")
-                .get(session => pteProductsUri + s"${session("chair").as[String]}")
+                .get(pteProductsUri + "${chair}")
                 .check(css("input[name='current_product']", "value").saveAs("c_chairCurrentProduct"))
                 .check(css("input[name='cart_content']", "value").saveAs("c_chairCartContent"))
                 .check(css("input[name='current_quantity']", "value").saveAs("c_chairCurrentQuantity"))

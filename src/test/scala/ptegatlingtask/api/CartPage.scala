@@ -10,9 +10,10 @@ object CartPage {
         exec(
             http("Navigate to Cart page")
                 .get(pteCartUri)
-                .check(css("td.td-price").find(0).saveAs("tablePrice"))
-                .check(css("td.td-price").find(1).saveAs("chairPrice"))
-                .check(css("td.total_net").saveAs("totalPrice"))
+                .check(css("td.td-price").find(0).saveAs("c_tablePrice"))
+                .check(css("td.td-price").find(1).saveAs("c_chairPrice"))
+                .check(css("td.total_net").saveAs("c_totalPrice"))
+                .check(css("input[name='trans_id']", "value").saveAs("c_transactionID"))
         )
     }
 
@@ -20,7 +21,6 @@ object CartPage {
         exec(
             http("Place Order")
                 .post(pteCheckoutUri)
-                // """{"117__":1,"89__":1}"""
                 .formParam("cart_content", {
                     val tableID = "${c_tableCurrentProduct}"
                     val tableQuantity = "${c_tableCurrentQuantity}"
@@ -29,13 +29,15 @@ object CartPage {
 
                     s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
                 })
-                .formParam("p_id[]", "117__")
-                .formParam("p_quantity[]", "1")
-                .formParam("p_id[]", "89__")
-                .formParam("p_quantity[]", "1")
-                .formParam("total_net", "434.00")
-                .formParam("trans_id", "17105043347648")
+                .formParam("p_id[]", "${c_tableCurrentProduct}__")
+                .formParam("p_quantity[]", "${c_tableCurrentQuantity}")
+                .formParam("p_id[]", "${c_chairCurrentProduct}__")
+                .formParam("p_quantity[]", "${c_chairCurrentQuantity}")
+                .formParam("total_net", "${c_totalPrice}")
+                .formParam("trans_id", "${c_transactionID}")
                 .formParam("shipping", "order")
+                .check(regex("""<option value="[A-Z]{2}" >${country} - (.*?)</option>""").saveAs("c_countryCode"))
+                .check(css("input[name='ic_formbuilder_redirect']", "value").saveAs("c_redirectThankYou"))
         )
     }
 }

@@ -15,6 +15,7 @@ object BaseHelper {
     val pteTankYouUri = "http://localhost/thank-you"
 
     val feederProducts = csv("ptegatlingtask/feeders/products.csv").circular
+    val feederPersonalDetails = csv("ptegatlingtask/feeders/personalDetails.csv").circular
 
     private val htmlAllowList = AllowList(
         s"""$pteBaseUri""",

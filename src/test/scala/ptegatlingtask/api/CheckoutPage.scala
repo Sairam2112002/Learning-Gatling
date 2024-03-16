@@ -11,8 +11,9 @@ object CheckoutPage {
             http("Select a Country")
                 .post(pteAdminUri)
                 .formParam("action", "ic_state_dropdown")
-                .formParam("country_code", "IN")
-                .formParam("state_code", ""),
+                .formParam("country_code", "${c_countryCode}")
+                .formParam("state_code", "")
+                .check(jsonPath("$..[?(@.label=='${state}')].value").saveAs("c_stateCode"))
         )
     }
 
@@ -20,26 +21,40 @@ object CheckoutPage {
         exec(
             http("Enter Details and Place Order")
                 .post(pteCheckoutUri)
-                .formParam("ic_formbuilder_redirect", "http://localhost/thank-you")
-                .formParam("cart_content", """{"117__":1,"89__":1}""")
-                .formParam("""product_price_117__""", "89.00")
-                .formParam("""product_price_89__""", "345.00")
-                .formParam("total_net", "434.00")
-                .formParam("trans_id", "17105043347648")
+                .formParam("ic_formbuilder_redirect", "${c_redirectThankYou}")
+                .formParam("cart_content", {
+                    val tableID = "${c_tableCurrentProduct}"
+                    val tableQuantity = "${c_tableCurrentQuantity}"
+                    val chairID = "${c_chairCurrentProduct}"
+                    val chairQuantity = "${c_chairCurrentQuantity}"
+
+                    s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
+                })
+                .formParam("""product_price_${c_tableCurrentProduct}__""", "${c_tablePrice}")
+                .formParam("""product_price_${c_chairCurrentProduct}__""", "${c_chairPrice}")
+                .formParam("total_net", "${c_totalPrice}")
+                .formParam("trans_id", "${c_transactionID}")
                 .formParam("shipping", "order")
-                .formParam("cart_content", """{"117__":1,"89__":1}""")
+                .formParam("cart_content", {
+                    val tableID = "${c_tableCurrentProduct}"
+                    val tableQuantity = "${c_tableCurrentQuantity}"
+                    val chairID = "${c_chairCurrentProduct}"
+                    val chairQuantity = "${c_chairCurrentQuantity}"
+
+                    s"""{"${tableID}__":$tableQuantity,"${chairID}__":$chairQuantity}"""
+                })
                 .formParam("cart_type", "order")
                 .formParam("cart_inside_header_1", "<b>BILLING ADDRESS</b>")
-                .formParam("cart_company", "Gryffindor")
-                .formParam("cart_name", "Harry Potter")
-                .formParam("cart_address", "Hogwarts")
-                .formParam("cart_postal", "P44")
-                .formParam("cart_city", "Hogsmeade")
-                .formParam("cart_country", "IN")
-                .formParam("cart_state", "IN_AP")
-                .formParam("cart_phone", "1234567890")
-                .formParam("cart_email", "hp@gmail.com")
-                .formParam("cart_comment", "no comments")
+                .formParam("cart_company", "${company}")
+                .formParam("cart_name", "${name}")
+                .formParam("cart_address", "${address}")
+                .formParam("cart_postal", "${postalCode}")
+                .formParam("cart_city", "${city}")
+                .formParam("cart_country", "${c_countryCode}")
+                .formParam("cart_state", "${c_stateCode}")
+                .formParam("cart_phone", "${phone}")
+                .formParam("cart_email", "${email}")
+                .formParam("cart_comment", "${comment}")
                 .formParam("cart_inside_header_2", "<b>DELIVERY ADDRESS</b> (FILL ONLY IF DIFFERENT FROM THE BILLING ADDRESS)")
                 .formParam("cart_s_company", "")
                 .formParam("cart_s_name", "")
