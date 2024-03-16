@@ -12,21 +12,22 @@ object BaseHelper {
     val pteAdminUri = "http://localhost/wp-admin/admin-ajax.php"
     val pteCartUri = "http://localhost/cart"
     val pteCheckoutUri = "http://localhost/checkout"
+    val pteTankYouUri = "http://localhost/thank-you"
 
     val feederProducts = csv("ptegatlingtask/feeders/products.csv").circular
 
+    private val htmlAllowList = AllowList(
+        s"""$pteBaseUri""",
+        s"""$pteTablesUri""",
+        s"""$pteChairsUri""",
+        s"""$pteProductsUri""",
+        s"""$pteAdminUri""",
+        s"""$pteCartUri""",
+        s"""$pteCheckoutUri""",
+        s"""$pteTankYouUri""")
+
     val httpProtocol: HttpProtocolBuilder = http
-        .disableAutoReferer
-        .disableFollowRedirect
-        .inferHtmlResources(AllowList(
-        """http://localhost/""",
-        """http://localhost/tables""",
-        """http://localhost/products/""",
-        """http://localhost/wp-admin/admin-ajax.php""",
-        """http://localhost/chairs""",
-        """http://localhost/cart""",
-        """http://localhost/checkout""",
-        """http://localhost/thank-you"""), DenyList(""".*"""))
+        .inferHtmlResources(htmlAllowList, DenyList(""".*"""))
         .acceptHeader("*/*")
         .acceptEncodingHeader("gzip, deflate, br")
         .acceptLanguageHeader("en-GB,en-US;q=0.9,en;q=0.8")

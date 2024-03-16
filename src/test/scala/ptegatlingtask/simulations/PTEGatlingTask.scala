@@ -21,7 +21,7 @@ class PTEGatlingTask extends Simulation {
                     ChairsPage.navigateToChairsPage(),
                     ProductPage.selectAChair(),
                     ProductPage.addChairToCart(),
-                    CartPage.navigateToCartPage(),
+                    CartPage.openCartPage(),
                     CartPage.placeOrder(),
                     CheckoutPage.selectCountry(),
                     CheckoutPage.enterDetailsAndPlaceOrder()

@@ -7,32 +7,48 @@ import ptegatlingtask.config.BaseHelper._
 
 object ProductPage {
     def selectATable(): ChainBuilder = {
-        exec(http("Select a Table").get(session => pteProductsUri +  s"${session("table").as[String]}"))
-    }
-
-    def selectAChair(): ChainBuilder = {
-        exec(http("Select a Chair").get(session => pteProductsUri +  s"${session("chair").as[String]}"))
+        exec(
+            http("Select a Table")
+                .get(session => pteProductsUri + s"${session("table").as[String]}")
+                .check(css("input[name='current_product']", "value").saveAs("c_tableCurrentProduct"))
+                .check(css("input[name='cart_content']", "value").saveAs("c_tableCartContent"))
+                .check(css("input[name='current_quantity']", "value").saveAs("c_tableCurrentQuantity"))
+        )
     }
 
     def addTableToCart(): ChainBuilder = {
         exec(
-            http("Add table to cart")
+            http("Add Table to cart")
                 .post(pteAdminUri)
                 .formParam("action", "ic_add_to_cart")
-                .formParam("add_cart_data", "current_product=117&cart_content=&current_quantity=1")
+                .formParam("add_cart_data", "current_product=${c_tableCurrentProduct}&cart_content=${c_tableCartContent}&current_quantity=${c_tableCurrentQuantity}")
                 .formParam("cart_widget", "0")
                 .formParam("cart_container", "0")
+                .check(status.is(200))
+                .check(substring("Added!").exists)
+        )
+    }
+
+    def selectAChair(): ChainBuilder = {
+        exec(
+            http(s"Select a Chair")
+                .get(session => pteProductsUri + s"${session("chair").as[String]}")
+                .check(css("input[name='current_product']", "value").saveAs("c_chairCurrentProduct"))
+                .check(css("input[name='cart_content']", "value").saveAs("c_chairCartContent"))
+                .check(css("input[name='current_quantity']", "value").saveAs("c_chairCurrentQuantity"))
         )
     }
 
     def addChairToCart(): ChainBuilder = {
         exec(
-            http("Add chair to cart")
+            http("Add Chair to cart")
                 .post(pteAdminUri)
                 .formParam("action", "ic_add_to_cart")
-                .formParam("add_cart_data", "current_product=89&cart_content=&current_quantity=1")
+                .formParam("add_cart_data", "current_product=${c_chairCurrentProduct}&cart_content=${c_chairCartContent}&current_quantity=${c_chairCurrentQuantity}")
                 .formParam("cart_widget", "0")
                 .formParam("cart_container", "0")
+                .check(status.is(200))
+                .check(substring("Added!").exists)
         )
     }
 }
