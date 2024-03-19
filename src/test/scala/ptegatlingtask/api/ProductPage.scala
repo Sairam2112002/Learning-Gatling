@@ -9,7 +9,7 @@ import ptegatlingtask.config.ProductDetails
 object ProductPage {
     def selectAProduct(product: String): ChainBuilder = {
         exec(
-            http("Select a Product")
+            http(s"Select a $product")
                 .get(pteProductsUri + "${" + product + "}")
                 .check(css("input[name='current_product']", "value").saveAs("productID"))
                 .check(css("input[name='cart_content']", "value").saveAs("productContent"))
@@ -36,7 +36,7 @@ object ProductPage {
 
     def addProductToCart(): ChainBuilder = {
         exec(
-            http("Add Table to cart")
+            http("Add Product to cart")
                 .post(pteAdminUri)
                 .formParam("action", "ic_add_to_cart")
                 .formParam("add_cart_data", session => {

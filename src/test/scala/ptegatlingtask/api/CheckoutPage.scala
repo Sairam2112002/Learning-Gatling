@@ -4,6 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure._
 import io.gatling.http.Predef._
 import ptegatlingtask.config.BaseHelper._
+import ptegatlingtask.config.ProductDetails
 
 object CheckoutPage {
     def selectCountry(): ChainBuilder = {
@@ -19,12 +20,24 @@ object CheckoutPage {
 
     def enterDetailsAndPlaceOrder(): ChainBuilder = {
         exec(
+            session => {
+                val sessionProductsList = session("productsList").as[List[ProductDetails]]
+                val product1 = sessionProductsList.head
+                val product2 = sessionProductsList.last
+
+                val map = Map("c_product1_id" -> product1.id, "c_product2_id" -> product2.id, "c_product1_price" -> product1.price, "c_product2_price" -> product2.price)
+
+                val newSession = session.setAll(map)
+                newSession
+            }
+        )
+        .exec(
             http("Enter Details and Place Order")
                 .post(pteCheckoutUri)
                 .formParam("ic_formbuilder_redirect", "${c_redirectThankYou}")
                 .formParam("cart_content", "${c_cartContent}")
-                .formParam("""product_price_${c_tableCurrentProduct}__""", "${c_tablePrice}")
-                .formParam("""product_price_${c_chairCurrentProduct}__""", "${c_chairPrice}")
+                .formParam("""product_price_${c_product1_id}__""", "${c_product1_price}")
+                .formParam("""product_price_${c_product2_id}__""", "${c_product2_price}")
                 .formParam("total_net", "${c_totalPrice}")
                 .formParam("trans_id", "${c_transactionID}")
                 .formParam("shipping", "order")

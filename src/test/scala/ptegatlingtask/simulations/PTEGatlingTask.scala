@@ -21,18 +21,26 @@ class PTEGatlingTask extends Simulation {
                         ProductPage.addProductToCart()
                     )
                 }.group("Add a chair to cart") {
-                    exec(
-                        ChairsPage.navigateToChairsPage(),
-                        ProductPage.selectAProduct("chair"),
-                        ProductPage.addProductToCart()
+                    randomSwitch(
+                        50d -> {
+                            exec(
+                                ChairsPage.navigateToChairsPage(),
+                                ProductPage.selectAProduct("chair"),
+                                ProductPage.addProductToCart()
+                            )
+                        }
                     )
                 }.group("Place order") {
-                    feed(feederPersonalDetails)
-                    .exec(
-                        CartPage.openCartPage(),
-                        CartPage.placeOrder(),
-                        CheckoutPage.selectCountry(),
-                        CheckoutPage.enterDetailsAndPlaceOrder()
+                    randomSwitch(
+                        30d -> {
+                            feed(feederPersonalDetails)
+                                .exec(
+                                    CartPage.openCartPage(),
+                                    CartPage.placeOrder(),
+                                    CheckoutPage.selectCountry(),
+                                    CheckoutPage.enterDetailsAndPlaceOrder()
+                                )
+                        }
                     )
                 }
             )
@@ -44,6 +52,7 @@ class PTEGatlingTask extends Simulation {
             .exec(flushCookieJar)
             .exitBlockOnFail(
                 feed(feederProducts)
+                .feed(feederPersonalDetails)
                 .exec(
                     HomePage.openPTEApplication(),
                     TablesPage.navigateToTablesPage(),
@@ -53,7 +62,9 @@ class PTEGatlingTask extends Simulation {
                     ProductPage.selectAProduct("chair"),
                     ProductPage.addProductToCart(),
                     CartPage.openCartPage(),
-                    CartPage.placeOrder()
+                    CartPage.placeOrder(),
+                    CheckoutPage.selectCountry(),
+                    CheckoutPage.enterDetailsAndPlaceOrder()
                 )
             )
     }
@@ -61,6 +72,6 @@ class PTEGatlingTask extends Simulation {
     // mvn clean gatling:test
 
     setUp(
-        scenario2.inject(atOnceUsers(1))
+        scenario1.inject(atOnceUsers(100))
     ).protocols(httpProtocol)
 }
