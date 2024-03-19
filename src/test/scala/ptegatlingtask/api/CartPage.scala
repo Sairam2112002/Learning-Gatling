@@ -10,8 +10,6 @@ object CartPage {
         exec(
             http("Navigate to Cart page")
                 .get(pteCartUri)
-                .check(css("td.td-price").find(0).saveAs("c_tablePrice"))
-                .check(css("td.td-price").find(1).saveAs("c_chairPrice"))
                 .check(css("td.total_net").saveAs("c_totalPrice"))
                 .check(css("input[name='trans_id']", "value").saveAs("c_transactionID"))
         )

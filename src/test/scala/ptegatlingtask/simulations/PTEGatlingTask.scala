@@ -17,21 +17,25 @@ class PTEGatlingTask extends Simulation {
                     .exec(
                         HomePage.openPTEApplication(),
                         TablesPage.navigateToTablesPage(),
+                        exec(thinkTimerForChoosingAProduct()),
                         ProductPage.selectATable(),
                         ProductPage.addTableToCart()
                     )
                 }.group("Add a chair to cart") {
                     exec(
                         ChairsPage.navigateToChairsPage(),
+                        exec(thinkTimerForChoosingAProduct()),
                         ProductPage.selectAChair(),
                         ProductPage.addChairToCart()
                     )
                 }.group("Place order") {
                     feed(feederPersonalDetails)
                     .exec(
+                        exec(thinkTimeForCheckingProductsInCart()),
                         CartPage.openCartPage(),
                         CartPage.placeOrder(),
                         CheckoutPage.selectCountry(),
+                        exec(timerForEnteringDetails()),
                         CheckoutPage.enterDetailsAndPlaceOrder()
                     )
                 }

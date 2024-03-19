@@ -13,7 +13,14 @@ object ProductPage {
                 .check(css("input[name='current_product']", "value").saveAs("c_tableCurrentProduct"))
                 .check(css("input[name='cart_content']", "value").saveAs("c_tableCartContent"))
                 .check(css("input[name='current_quantity']", "value").saveAs("c_tableCurrentQuantity"))
+                .check(css("td.price-value").saveAs("tablePrice"))
         )
+            .exec(
+                session => {
+                    val newSession = session.set("c_tablePrice", session("tablePrice").as[String].substring(1))
+                    newSession
+                }
+            )
     }
 
     def addTableToCart(): ChainBuilder = {
@@ -36,7 +43,14 @@ object ProductPage {
                 .check(css("input[name='current_product']", "value").saveAs("c_chairCurrentProduct"))
                 .check(css("input[name='cart_content']", "value").saveAs("c_chairCartContent"))
                 .check(css("input[name='current_quantity']", "value").saveAs("c_chairCurrentQuantity"))
+                .check(css("td.price-value").saveAs("chairPrice"))
         )
+            .exec(
+                session => {
+                    val newSession = session.set("c_chairPrice", session("chairPrice").as[String].substring(1))
+                    newSession
+                }
+            )
     }
 
     def addChairToCart(): ChainBuilder = {
