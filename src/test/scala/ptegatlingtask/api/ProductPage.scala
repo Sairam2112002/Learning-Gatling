@@ -4,61 +4,47 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure._
 import io.gatling.http.Predef._
 import ptegatlingtask.config.BaseHelper._
+import ptegatlingtask.config.ProductDetails
 
 object ProductPage {
-    def selectATable(): ChainBuilder = {
+    def selectAProduct(product: String): ChainBuilder = {
         exec(
-            http("Select a Table")
-                .get(pteProductsUri + "${table}")
-                .check(css("input[name='current_product']", "value").saveAs("c_tableCurrentProduct"))
-                .check(css("input[name='cart_content']", "value").saveAs("c_tableCartContent"))
-                .check(css("input[name='current_quantity']", "value").saveAs("c_tableCurrentQuantity"))
-                .check(css("td.price-value").saveAs("tablePrice"))
+            http("Select a Product")
+                .get(pteProductsUri + "${" + product + "}")
+                .check(css("input[name='current_product']", "value").saveAs("productID"))
+                .check(css("input[name='cart_content']", "value").saveAs("productContent"))
+                .check(css("input[name='current_quantity']", "value").saveAs("productQuantity"))
+                .check(css("td.price-value").saveAs("productPrice"))
         )
             .exec(
                 session => {
-                    val newSession = session.set("c_tablePrice", session("tablePrice").as[String].substring(1))
+                    val productID = session("productID").as[String]
+                    val productContent = session("productContent").as[String]
+                    val productQuantity = session("productQuantity").as[String]
+                    val productPrice = session("productPrice").as[String]
+
+                    val sessionProductsList = session("productsList").as[List[ProductDetails]]
+
+                    val newProduct = ProductDetails(productID, productContent, productQuantity, productPrice)
+                    val updatedProductList = sessionProductsList :+ newProduct
+
+                    val newSession = session.set("productsList", updatedProductList)
                     newSession
                 }
             )
     }
 
-    def addTableToCart(): ChainBuilder = {
+    def addProductToCart(): ChainBuilder = {
         exec(
             http("Add Table to cart")
                 .post(pteAdminUri)
                 .formParam("action", "ic_add_to_cart")
-                .formParam("add_cart_data", "current_product=${c_tableCurrentProduct}&cart_content=${c_tableCartContent}&current_quantity=${c_tableCurrentQuantity}")
-                .formParam("cart_widget", "0")
-                .formParam("cart_container", "0")
-                .check(status.is(200))
-                .check(substring("Added!").exists)
-        )
-    }
+                .formParam("add_cart_data", session => {
+                    val sessionProductsList = session("productsList").as[List[ProductDetails]]
+                    val product = sessionProductsList.last
 
-    def selectAChair(): ChainBuilder = {
-        exec(
-            http(s"Select a Chair")
-                .get(pteProductsUri + "${chair}")
-                .check(css("input[name='current_product']", "value").saveAs("c_chairCurrentProduct"))
-                .check(css("input[name='cart_content']", "value").saveAs("c_chairCartContent"))
-                .check(css("input[name='current_quantity']", "value").saveAs("c_chairCurrentQuantity"))
-                .check(css("td.price-value").saveAs("chairPrice"))
-        )
-            .exec(
-                session => {
-                    val newSession = session.set("c_chairPrice", session("chairPrice").as[String].substring(1))
-                    newSession
-                }
-            )
-    }
-
-    def addChairToCart(): ChainBuilder = {
-        exec(
-            http("Add Chair to cart")
-                .post(pteAdminUri)
-                .formParam("action", "ic_add_to_cart")
-                .formParam("add_cart_data", "current_product=${c_chairCurrentProduct}&cart_content=${c_chairCartContent}&current_quantity=${c_chairCurrentQuantity}")
+                    s"current_product=${product.id}&cart_content=${product.content}&cart_quantity=${product.quantity}"
+                })
                 .formParam("cart_widget", "0")
                 .formParam("cart_container", "0")
                 .check(status.is(200))

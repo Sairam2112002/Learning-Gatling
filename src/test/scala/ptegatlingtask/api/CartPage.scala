@@ -4,6 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure._
 import io.gatling.http.Predef._
 import ptegatlingtask.config.BaseHelper._
+import ptegatlingtask.config.ProductDetails
 
 object CartPage {
     def openCartPage(): ChainBuilder = {
