@@ -19,15 +19,17 @@ object CheckoutPage {
     }
 
     def enterDetailsAndPlaceOrder(): ChainBuilder = {
+        /**
+         * Creating a formParamSequence which contains a List of tuples
+         * Here, each tuple represents a formParam containing a paramKey and its paramValue
+         */
         exec(
             session => {
                 val sessionProductsList = session("productsList").as[List[ProductDetails]]
-                val product1 = sessionProductsList.head
-                val product2 = sessionProductsList.last
 
-                val map = Map("c_product1_id" -> product1.id, "c_product2_id" -> product2.id, "c_product1_price" -> product1.price, "c_product2_price" -> product2.price)
+                val productPricesFormParameters = sessionProductsList.map(product => (s"""product_price_${product.id}__""", product.price))
 
-                val newSession = session.setAll(map)
+                val newSession = session.set("c_productPricesFormParameters", productPricesFormParameters)
                 newSession
             }
         )
@@ -36,8 +38,7 @@ object CheckoutPage {
                 .post(pteCheckoutUri)
                 .formParam("ic_formbuilder_redirect", "${c_redirectThankYou}")
                 .formParam("cart_content", "${c_cartContent}")
-                .formParam("""product_price_${c_product1_id}__""", "${c_product1_price}")
-                .formParam("""product_price_${c_product2_id}__""", "${c_product2_price}")
+                .formParamSeq("${c_productPricesFormParameters}")
                 .formParam("total_net", "${c_totalPrice}")
                 .formParam("trans_id", "${c_transactionID}")
                 .formParam("shipping", "order")

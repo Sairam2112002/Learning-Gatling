@@ -14,7 +14,7 @@ object CartPage {
                 .check(css("td.total_net").saveAs("c_totalPrice"))
                 .check(css("input[name='trans_id']", "value").saveAs("c_transactionID"))
         )
-        // creating the value of "cart_content" parameter from the added products
+        // creating the value of "cart_content" formParameter from the added products
         .exec(
             session => {
                 val sessionProductsList = session("productsList").as[List[ProductDetails]]

@@ -21,7 +21,7 @@ object ProductPage {
                     val productID = session("productID").as[String]
                     val productContent = session("productContent").as[String]
                     val productQuantity = session("productQuantity").as[String]
-                    val productPrice = session("productPrice").as[String]
+                    val productPrice = session("productPrice").as[String].substring(1)
 
                     val sessionProductsList = session("productsList").as[List[ProductDetails]]
 
