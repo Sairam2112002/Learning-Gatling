@@ -6,6 +6,8 @@ import io.gatling.http.Predef.http
 import io.gatling.http.protocol.HttpProtocolBuilder
 
 object BaseHelper {
+
+    // URIs
     val pteBaseUri = "http://localhost/"
     val pteTablesUri = "http://localhost/tables"
     val pteChairsUri = "http://localhost/chairs"
@@ -15,21 +17,22 @@ object BaseHelper {
     val pteCheckoutUri = "http://localhost/checkout"
     val pteTankYouUri = "http://localhost/thank-you"
 
+    // feeders
     val feederProducts = csv("ptegatlingtask/feeders/products.csv").circular
     val feederPersonalDetails = csv("ptegatlingtask/feeders/personalDetails.csv").circular
 
+    // pauses
     def thinkTimerForChoosingAProduct(): ChainBuilder = {
         pause(5, 10)
     }
-
-    def thinkTimeForCheckingProductsInCart(): ChainBuilder = {
+    def thinkTimerForCheckingProductsInCart(): ChainBuilder = {
         pause(2, 5)
     }
-
     def timerForEnteringDetails(): ChainBuilder = {
         pause(20, 30)
     }
 
+    // HTML Resources sort
     private val htmlAllowList = AllowList(
         s"""$pteBaseUri""",
         s"""$pteTablesUri""",
@@ -40,6 +43,7 @@ object BaseHelper {
         s"""$pteCheckoutUri""",
         s"""$pteTankYouUri""")
 
+    // HTTP Protocols
     val httpProtocol: HttpProtocolBuilder = http
         .inferHtmlResources(htmlAllowList, DenyList(""".*"""))
         .acceptHeader("*/*")
