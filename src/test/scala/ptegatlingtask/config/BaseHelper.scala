@@ -1,6 +1,7 @@
 package ptegatlingtask.config
 
 import io.gatling.core.Predef._
+import io.gatling.core.feeder.BatchableFeederBuilder
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef.http
 import io.gatling.http.protocol.HttpProtocolBuilder
@@ -18,8 +19,8 @@ object BaseHelper {
     val pteTankYouUri = "http://localhost/thank-you"
 
     // feeders
-    val feederProducts = csv("ptegatlingtask/feeders/products.csv").circular
-    val feederPersonalDetails = csv("ptegatlingtask/feeders/personalDetails.csv").circular
+    val feederProducts: BatchableFeederBuilder[String] = csv("ptegatlingtask/feeders/products.csv").circular
+    val feederPersonalDetails: BatchableFeederBuilder[String] = csv("ptegatlingtask/feeders/personalDetails.csv").circular
 
     // pauses
     def thinkTimerForChoosingAProduct(): ChainBuilder = {
