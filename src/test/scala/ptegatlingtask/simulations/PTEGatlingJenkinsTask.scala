@@ -4,11 +4,10 @@ import io.gatling.core.Predef._
 import ptegatlingtask.config.BaseHelper._
 import ptegatlingtask.scenarios.PTEGatlingTaskScenarios._
 
-class PTEGatlingTask extends Simulation {
+import scala.concurrent.duration.DurationInt
 
-    // mvn clean gatling:test
-
+class PTEGatlingJenkinsTask extends Simulation{
     setUp(
-        pteGatlingTaskScenario.inject(atOnceUsers(100))
+        pteGatlingJenkinsTaskScenario.inject(rampUsers(5).during(10.seconds))
     ).protocols(httpProtocol)
 }

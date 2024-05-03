@@ -24,13 +24,13 @@ object BaseHelper {
 
     // pauses
     def thinkTimerForChoosingAProduct(): ChainBuilder = {
-        pause(5, 10)
+        pause(2, 4)
     }
     def thinkTimerForCheckingProductsInCart(): ChainBuilder = {
-        pause(2, 5)
+        pause(2, 4)
     }
     def timerForEnteringDetails(): ChainBuilder = {
-        pause(20, 30)
+        pause(2, 4)
     }
 
     // HTML Resources sort

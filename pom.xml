@@ -73,9 +73,10 @@
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
-        <configuration>
-          <simulationClass>ptegatlingtask.simulations.PTEGatlingTask</simulationClass>
-        </configuration>
+<!--        Use the below configuration to set the simulationClass-->
+<!--        <configuration>-->
+<!--          <simulationClass>ptegatlingtask.simulations.PTEGatlingTask</simulationClass>-->
+<!--        </configuration>-->
       </plugin>
     </plugins>
   </build>
