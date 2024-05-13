@@ -87,4 +87,39 @@ object PTEGatlingTaskScenarios {
             )
         }
     }
+
+    val pteGatlingCapacityTestScenario: ScenarioBuilder = {
+        scenario("PTE Gatling Home Task")
+            .exec(flushHttpCache)
+            .exec(flushCookieJar)
+            .exitBlockOnFail(
+                group("Open application and add a table to cart") {
+                    feed(feederProducts)
+                        .exec(
+                            HomePage.openPTEApplication(),
+                            TablesPage.navigateToTablesPage(),
+                            exec(thinkTimerForChoosingAProduct()), // pause
+                            ProductPage.selectAProduct("table"),
+                            ProductPage.addProductToCart()
+                        )
+                }.group("Add a chair to cart") {
+                    exec(
+                        ChairsPage.navigateToChairsPage(),
+                        exec(thinkTimerForChoosingAProduct()), // pause
+                        ProductPage.selectAProduct("chair"),
+                        ProductPage.addProductToCart()
+                    )
+                }.group("Place order") {
+                    feed(feederPersonalDetails)
+                        .exec(
+                            CartPage.openCartPage(),
+                            exec(thinkTimerForCheckingProductsInCart()), // pause
+                            CartPage.placeOrder(),
+                            exec(timerForEnteringDetails()), // pause
+                            CheckoutPage.selectCountry(),
+                            CheckoutPage.enterDetailsAndPlaceOrder()
+                        )
+                }
+            )
+    }
 }
